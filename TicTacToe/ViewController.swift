@@ -171,25 +171,50 @@ class ViewController: UIViewController {
     }
     
     @IBAction func didTapPlayAgainButton(_ sender: UIButton) {
-        let ac = UIAlertController(title: "Thông báo", message: "Bạn có chắc chắn muốn chơi lại không?", preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "Không", style: .cancel, handler: nil))
-        ac.addAction(UIAlertAction(title: "Có", style: .destructive, handler: { (_) in
-            self.turnLabel.text = self.CROSS
-            self.turnLabel.textColor = .red
-            self.firstTurn = Turn.Cross
-            self.currentTurn = Turn.Cross
-            for button in self.board {
-                button.setTitle(nil, for: .normal)
-                button.isEnabled = true
-            }
-            self.crossScore = 0
-            self.drawScore = 0
-            self.noughtScore = 0
-            self.Xwin.text = "X Win 0"
-            self.drawXO.text = "Draw 0"
-            self.Owin.text = "O Win 0"
-        }))
+        showPlayAgainAlert()
+    }
+    
+    private func showPlayAgainAlert() {
+        let ac = UIAlertController(
+            title: "Thông báo",
+            message: "Bạn có chắc chắn muốn chơi lại không?",
+            preferredStyle: .alert
+        )
+        
+        ac.addAction(UIAlertAction(title: "Không", style: .cancel))
+        ac.addAction(UIAlertAction(title: "Có", style: .destructive) { [weak self] _ in
+            self?.resetGameState()
+        })
+        
         present(ac, animated: true)
+    }
+
+    private func resetGameState() {
+        // Reset turn state
+        turnLabel.text = CROSS
+        turnLabel.textColor = .red
+        firstTurn = Turn.Cross
+        currentTurn = Turn.Cross
+        
+        // Reset board
+        for button in board {
+            button.setTitle(nil, for: .normal)
+            button.isEnabled = true
+        }
+        
+        // Reset scores
+        crossScore = 0
+        drawScore = 0
+        noughtScore = 0
+        
+        // Update score labels
+        updateScoreLabels()
+    }
+
+    private func updateScoreLabels() {
+        Xwin.text = "X Win \(crossScore)"
+        drawXO.text = "Draw \(drawScore)"
+        Owin.text = "O Win \(noughtScore)"
     }
     
 }
